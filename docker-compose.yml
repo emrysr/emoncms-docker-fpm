@@ -4,7 +4,28 @@ services:
     build: 
       context: './php/'
     volumes:
-      - www:/var/www/html/
+      - www:/var/www/
+    environment:
+      - "MYSQL_HOST=db"
+      - "MYSQL_PORT=3306"
+      - "MYSQL_DATABASE=emoncms"
+      - "MYSQL_USER=emoncms"
+      - "MYSQL_PASSWORD=emoncms"
+      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
+
+      - "REDIS_ENABLED=true"
+      - "REDIS_HOST=redis"
+      - "REDIS_PORT=6379"
+      - "REDIS_PREFIX='emoncms'"
+
+      - "MQTT_ENABLED=true"
+      - "MQTT_HOST=mqtt"
+      - "MQTT_USER=emonpi"
+      - "MQTT_PASSWORD=emonpimqtt2016"
+      - "MQTT_BASETOPIC=emon"
+
+      - "PHPFINA_DIR=/var/opt/emoncms/phpfina/"
+      - "PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/"
   apache:
     build:
       context: './apache/'
@@ -14,13 +35,18 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - www:/var/www/html/
+      - www:/var/www/
   db:
     image: mariadb:latest
     volumes:
       - data:/var/lib/mysql
-    env_file:
-     - 'default.docker-env'
+    environment:
+      - "MYSQL_HOST=db"
+      - "MYSQL_PORT=3306"
+      - "MYSQL_DATABASE=emoncms"
+      - "MYSQL_USER=emoncms"
+      - "MYSQL_PASSWORD=emoncms"
+      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
   redis:
     image: redis:5
     volumes:
