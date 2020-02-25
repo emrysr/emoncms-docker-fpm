@@ -4,7 +4,7 @@ services:
     build: 
       context: './php/'
     volumes:
-      - ./emoncms:/var/www/html/
+      - www:/var/www/html/
   apache:
     build:
       context: './apache/'
@@ -14,7 +14,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./emoncms:/var/www/html/
+      - www:/var/www/html/
   db:
     image: mariadb:latest
     volumes:
