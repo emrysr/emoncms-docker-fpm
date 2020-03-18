@@ -1,8 +1,7 @@
 version: "2"
 services:
   php:
-    build: 
-      context: './php/'
+    build: './php/' 
     volumes:
       - www:/var/www/
       - phpfina:/var/opt/emoncms/phpfina
@@ -27,9 +26,22 @@ services:
       - "MQTT_USER=emonpi"
       - "MQTT_PASSWORD=emonpimqtt2016"
       - "MQTT_BASETOPIC=emon"
+      - "MQTT_PORT=1884"
 
       - "PHPFINA_DIR=/var/opt/emoncms/phpfina/"
       - "PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/"
+      - "PREDISBUFFER_ENABLED=true"
+      - "EMONCMS_DIR=/opt/emoncms"
+      - "OPENENERGYMONITOR_DIR=/opt/openenergymonitor"
+        
+      - "DEFAULT_LANG=cy_GB"
+
+      - "LOG_ENABLED=true"
+      - "LOG_LOCATION=/var/log/emoncms"
+      - "LOG_LEVEL=1"
+
+      - "FEEDVIEW_PATH=vis/rawdata?feedid="
+
     ports:
       - "9000:9000"
   apache:
@@ -39,7 +51,7 @@ services:
       - php
       - db
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - www:/var/www/
   db:
@@ -61,6 +73,11 @@ services:
       driver: json-file
       options:
         max-size: "10m"
+    environment:
+      - "REDIS_ENABLED=true"
+      - "REDIS_HOST=redis"
+      - "REDIS_PORT=6379"
+      - "REDIS_PREFIX='emoncms'"
   mqtt:
     image: eclipse-mosquitto:1.6
     ports:
@@ -75,6 +92,13 @@ services:
     volumes:
       - www:/var/www/
     command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    
+  emoncms_feedwriter:
+    build: './emoncms_feedwriter'
+    depends_on:
+      - php
+    command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    # command: ["tail", "-f", "/dev/null"]
            
 volumes:
   db:

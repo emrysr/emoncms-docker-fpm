@@ -22,8 +22,8 @@ COPY docker.settings.ini /var/www/emoncms/settings.ini
 RUN mkdir /var/opt/emoncms
 RUN mkdir /var/opt/emoncms/phpfina
 RUN mkdir /var/opt/emoncms/phptimeseries
-RUN chown www-data:root /var/opt/emoncms/phpfina
-RUN chown www-data:root /var/opt/emoncms/phptimeseries
+
+RUN chown -R www-data: /var/opt/emoncms/
 
 # Create Emoncms logfile
 RUN mkdir /var/log/emoncms
