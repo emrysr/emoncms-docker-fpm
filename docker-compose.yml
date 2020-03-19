@@ -26,7 +26,6 @@ services:
       - "MQTT_USER=emonpi"
       - "MQTT_PASSWORD=emonpimqtt2016"
       - "MQTT_BASETOPIC=emon"
-      - "MQTT_PORT=1883"
 
       - "PHPFINA_DIR=/var/opt/emoncms/phpfina/"
       - "PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/"
@@ -41,23 +40,13 @@ services:
       - "LOG_LEVEL=1"
 
       - "FEEDVIEW_PATH=vis/rawdata?feedid="
-
-    ports:
-      - "9000:9000"
   apache:
-    build:
-      context: './apache/'
-      args:
-        apache_port: 80
+    build: './apache/'
     depends_on:
       - php
       - db
-    environment:
-      - "APACHE_PORT=${APACHE_PORT}"
     volumes:
       - www:/var/www/
-    ports:
-      - 80:80
   db:
     image: mariadb:latest
     volumes:
@@ -84,8 +73,6 @@ services:
       - "REDIS_PREFIX='emoncms'"
   mqtt:
     image: eclipse-mosquitto:1.6
-    ports:
-      - 1883:1883
       
   emoncms_mqtt:
     build:

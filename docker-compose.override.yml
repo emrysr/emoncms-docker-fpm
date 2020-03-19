@@ -1,0 +1,9 @@
+version: "2"
+services:
+  php:
+    environment:
+      - MQTT_PORT=1884
+  apache:
+    ports: ['8888:80']
+  mqtt:
+    ports: ['1884:1883']
