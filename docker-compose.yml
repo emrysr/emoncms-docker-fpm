@@ -1,96 +1,80 @@
 version: "2"
 services:
   php:
-    build: './php/' 
+    build: './php/'
     volumes:
       - www:/var/www/
       - phpfina:/var/opt/emoncms/phpfina
       - phptimeseries:/var/opt/emoncms/phptimeseries
-      - emoncms-log:/var/log/emoncms   
+      - emoncms-log:/var/log/emoncms
       - var-lock:/var/lock
     environment:
-      - "MYSQL_HOST=db"
-      - "MYSQL_PORT=3306"
-      - "MYSQL_DATABASE=emoncms"
-      - "MYSQL_USER=emoncms"
-      - "MYSQL_PASSWORD=emoncms"
-      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
+      - "MYSQL_HOST=${MYSQL_HOST}"
+      - "MYSQL_PORT=${MYSQL_PORT}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
 
-      - "REDIS_ENABLED=true"
-      - "REDIS_HOST=redis"
-      - "REDIS_PORT=6379"
-      - "REDIS_PREFIX='emoncms'"
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
 
-      - "MQTT_ENABLED=true"
-      - "MQTT_HOST=mqtt"
-      - "MQTT_USER=emonpi"
-      - "MQTT_PASSWORD=emonpimqtt2016"
-      - "MQTT_BASETOPIC=emon"
+      - "MQTT_ENABLED=${MQTT_ENABLED}"
+      - "MQTT_HOST=${MQTT_HOST}"
+      - "MQTT_USER=${MQTT_USER}"
+      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
+      - "MQTT_BASETOPIC=${MQTT_BASETOPIC}"
 
-      - "PHPFINA_DIR=/var/opt/emoncms/phpfina/"
-      - "PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/"
-      - "PREDISBUFFER_ENABLED=true"
-      - "EMONCMS_DIR=/opt/emoncms"
-      - "OPENENERGYMONITOR_DIR=/opt/openenergymonitor"
-        
-      - "DEFAULT_LANG=cy_GB"
+      - "PHPFINA_DIR=${PHPFINA_DIR}"
+      - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
+      - "PREDISBUFFER_ENABLED=${PREDISBUFFER_ENABLED}"
+      - "EMONCMS_DIR=${EMONCMS_DIR}"
+      - "OPENENERGYMONITOR_DIR=${OPENENERGYMONITOR_DIR}"
 
-      - "LOG_ENABLED=true"
-      - "LOG_LOCATION=/var/log/emoncms"
-      - "LOG_LEVEL=1"
+      - "DEFAULT_LANG=${DEFAULT_LANG}"
 
-      - "FEEDVIEW_PATH=vis/rawdata?feedid="
+      - "LOG_ENABLED=${LOG_ENABLED}"
+      - "LOG_LOCATION=${LOG_LOCATION}"
+      - "LOG_LEVEL=${LOG_LEVEL}"
+
+      - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
   apache:
     build: './apache/'
-    depends_on:
-      - php
-      - db
-    volumes:
-      - www:/var/www/
+    depends_on: ["php", "db"]
+    volumes: ["www:/var/www/"]
   db:
     image: mariadb:latest
-    volumes:
-      - db:/var/lib/mysql
+    volumes: ["db:/var/lib/mysql"]
     environment:
-      - "MYSQL_HOST=db"
-      - "MYSQL_PORT=3306"
-      - "MYSQL_DATABASE=emoncms"
-      - "MYSQL_USER=emoncms"
-      - "MYSQL_PASSWORD=emoncms"
-      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
+      - "MYSQL_HOST=${MYSQL_HOST}"
+      - "MYSQL_PORT=${MYSQL_PORT}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
   redis:
     image: redis:5
-    volumes:
-      - redis:/data
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
+    volumes: ["redis:/data"]
     environment:
-      - "REDIS_ENABLED=true"
-      - "REDIS_HOST=redis"
-      - "REDIS_PORT=6379"
-      - "REDIS_PREFIX='emoncms'"
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
   mqtt:
     image: eclipse-mosquitto:1.6
-      
+
   emoncms_mqtt:
-    build:
-      context: './emoncms_mqtt/'
-    depends_on:
-      - php
-      - db
-    volumes:
-      - www:/var/www/
+    build: './emoncms_mqtt/'
+    depends_on: ["php"]
+    volumes: ["www:/var/www/"]
     command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
-    
+
   emoncms_feedwriter:
     build: './emoncms_feedwriter'
-    depends_on:
-      - php
+    depends_on: ["php"]
     command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
-    # command: ["tail", "-f", "/dev/null"]
-           
+
 volumes:
   db:
   www:
