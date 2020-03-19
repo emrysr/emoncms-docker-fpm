@@ -1,12 +1,19 @@
 version: "2"
 services:
   php:
-    build: './php/'
+    build:
+      context: ./php
+      args:
+        - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "PHPFINA_DIR=${PHPFINA_DIR}"
+        - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
+        - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
+        - "LOG_LOCATION=${LOG_LOCATION}"
     volumes:
-      - www:/var/www/
-      - phpfina:/var/opt/emoncms/phpfina
-      - phptimeseries:/var/opt/emoncms/phptimeseries
-      - emoncms-log:/var/log/emoncms
+      - www:${WEB_DIR}
+      - phpfina:${PHPFINA_DIR}
+      - phptimeseries:${PHPTIMESERIES_DIR}
+      - emoncms-log:${LOG_LOCATION}
       - var-lock:/var/lock
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
@@ -38,14 +45,19 @@ services:
       - "LOG_LOCATION=${LOG_LOCATION}"
       - "LOG_LEVEL=${LOG_LEVEL}"
 
+      - "APPNAME=${APPNAME}"
       - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
+    working_dir: ${WEB_DIR}/emoncms
+
   apache:
-    build: './apache/'
+    build: ./apache
     depends_on: ["php", "db"]
-    volumes: ["www:/var/www/"]
+    volumes: ["www:${WEB_DIR}"]
+    ports: ["${WEB_PORT}:88"]
+
   db:
     image: mariadb:latest
-    volumes: ["db:/var/lib/mysql"]
+    volumes: ["db:${MYSQL_DATA_DIR}"]
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
       - "MYSQL_PORT=${MYSQL_PORT}"
@@ -53,27 +65,40 @@ services:
       - "MYSQL_USER=${MYSQL_USER}"
       - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
       - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
+
   redis:
     image: redis:5
-    volumes: ["redis:/data"]
+    volumes: ["redis:${REDIS_DATA_DIR}"]
     environment:
       - "REDIS_ENABLED=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
       - "REDIS_PORT=${REDIS_PORT}"
       - "REDIS_PREFIX=${REDIS_PREFIX}"
+
   mqtt:
     image: eclipse-mosquitto:1.6
 
   emoncms_mqtt:
     build: './emoncms_mqtt/'
     depends_on: ["php"]
-    volumes: ["www:/var/www/"]
-    command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    volumes: ["www:${WEB_DIR}"]
+    command: ["sleep", "5", "echo SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php", "REQUEST_METHOD=GET", "cgi-fcgi", "-bind", "-connect php:9000"]
 
   emoncms_feedwriter:
     build: './emoncms_feedwriter'
     depends_on: ["php"]
-    command: sh -c "sleep 5; SCRIPT_FILENAME=/var/www/emoncms/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    command: ["sleep", "5", "echo SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/feedwriter.php", "REQUEST_METHOD=GET", "cgi-fcgi", "-bind", "-connect", "php:9000"]
+
+  emoncms_service-runner:
+    build: './emoncms_service-runner'
+    volumes: ["www:${WEB_DIR}"]
+    depends_on: ["redis"]
+    command: ["python", "echo ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"]
+    environment:
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
 
 volumes:
   db:
