@@ -26,7 +26,7 @@ services:
       - "MQTT_USER=emonpi"
       - "MQTT_PASSWORD=emonpimqtt2016"
       - "MQTT_BASETOPIC=emon"
-      - "MQTT_PORT=1884"
+      - "MQTT_PORT=1883"
 
       - "PHPFINA_DIR=/var/opt/emoncms/phpfina/"
       - "PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/"
@@ -56,6 +56,8 @@ services:
       - "APACHE_PORT=${APACHE_PORT}"
     volumes:
       - www:/var/www/
+    ports:
+      - 80:80
   db:
     image: mariadb:latest
     volumes:
@@ -83,7 +85,7 @@ services:
   mqtt:
     image: eclipse-mosquitto:1.6
     ports:
-      - 1884:1883
+      - 1883:1883
       
   emoncms_mqtt:
     build:
