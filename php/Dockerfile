@@ -23,9 +23,11 @@ RUN git clone https://github.com/emrysr/emoncms.git ${EMONCMS_WEB_DIR} \
     && git clone https://github.com/emoncms/app.git ${EMONCMS_WEB_DIR}/Modules/app
 
 RUN git clone https://github.com/emoncms/backup.git ${EMONCMS_DIR}/backup \
-    && git clone https://github.com/emoncms/sync.git ${EMONCMS_DIR}/sync \
-    && ln -s /opt/emoncms/backup/backup-module ${EMONCMS_WEB_DIR}/Modules/backup \
-    && ln -s /opt/emoncms/sync/sync-module ${EMONCMS_WEB_DIR}/Modules/sync
+    && git clone https://github.com/emoncms/sync.git ${EMONCMS_DIR}/sync
+
+RUN ln -s /opt/emoncms/backup/backup-module ${EMONCMS_WEB_DIR}/Modules/backup \
+    && ln -s /opt/emoncms/sync/sync-module ${EMONCMS_WEB_DIR}/Modules/sync \
+    && mv ${EMONCMS_DIR}/backup/default.config.cfg ${EMONCMS_DIR}/backup/config.cfg
 
 COPY ./docker.settings.ini ${EMONCMS_WEB_DIR}/settings.ini
 

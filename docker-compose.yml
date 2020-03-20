@@ -42,7 +42,9 @@ services:
       - "LOG_LEVEL=${LOG_LEVEL}"
       - "APPNAME=${APPNAME}"
       - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
-    working_dir: ${WEB_DIR}/emoncms
+      - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+
+    working_dir: ${WEB_DIR}/${APPNAME}
 
   apache:
     build: ./apache
