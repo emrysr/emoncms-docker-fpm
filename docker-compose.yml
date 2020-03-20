@@ -9,6 +9,7 @@ services:
         - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
         - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
         - "LOG_LOCATION=${LOG_LOCATION}"
+        - "PHP_VERSION=${PHP_VERSION}"
     volumes:
       - www:${WEB_DIR}
       - phpfina:${PHPFINA_DIR}
@@ -21,30 +22,24 @@ services:
       - "MYSQL_DATABASE=${MYSQL_DATABASE}"
       - "MYSQL_USER=${MYSQL_USER}"
       - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-
       - "REDIS_ENABLED=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
       - "REDIS_PORT=${REDIS_PORT}"
       - "REDIS_PREFIX=${REDIS_PREFIX}"
-
       - "MQTT_ENABLED=${MQTT_ENABLED}"
       - "MQTT_HOST=${MQTT_HOST}"
       - "MQTT_USER=${MQTT_USER}"
       - "MQTT_PASSWORD=${MQTT_PASSWORD}"
       - "MQTT_BASETOPIC=${MQTT_BASETOPIC}"
-
       - "PHPFINA_DIR=${PHPFINA_DIR}"
       - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
-      - "PREDISBUFFER_ENABLED=${PREDISBUFFER_ENABLED}"
+      - "REDISBUFFER_ENABLED=${PREDISBUFFER_ENABLED}"
       - "EMONCMS_DIR=${EMONCMS_DIR}"
       - "OPENENERGYMONITOR_DIR=${OPENENERGYMONITOR_DIR}"
-
       - "DEFAULT_LANG=${DEFAULT_LANG}"
-
       - "LOG_ENABLED=${LOG_ENABLED}"
       - "LOG_LOCATION=${LOG_LOCATION}"
       - "LOG_LEVEL=${LOG_LEVEL}"
-
       - "APPNAME=${APPNAME}"
       - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
     working_dir: ${WEB_DIR}/emoncms
@@ -81,24 +76,24 @@ services:
   emoncms_mqtt:
     build: './emoncms_mqtt/'
     depends_on: ["php"]
-    volumes: ["www:${WEB_DIR}"]
-    command: ["sleep", "5", "echo SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php", "REQUEST_METHOD=GET", "cgi-fcgi", "-bind", "-connect php:9000"]
-
+    command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+  
   emoncms_feedwriter:
     build: './emoncms_feedwriter'
     depends_on: ["php"]
-    command: ["sleep", "5", "echo SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/feedwriter.php", "REQUEST_METHOD=GET", "cgi-fcgi", "-bind", "-connect", "php:9000"]
+    command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
 
   emoncms_service-runner:
     build: './emoncms_service-runner'
+    depends_on: ["redis","php"]
     volumes: ["www:${WEB_DIR}"]
-    depends_on: ["redis"]
-    command: ["python", "echo ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"]
+    command: sh -c "sleep 5; python ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"
     environment:
       - "REDIS_ENABLED=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
       - "REDIS_PORT=${REDIS_PORT}"
       - "REDIS_PREFIX=${REDIS_PREFIX}"
+    #restart: unless-stopped
 
 volumes:
   db:
