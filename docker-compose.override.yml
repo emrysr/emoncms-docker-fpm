@@ -1,6 +1,9 @@
 version: "2"
 services:
   php:
+    volumes:
+        - www:/var/www-old
+        - ~/Documents/emoncms2:/var/www/emoncms
     environment:
       - MQTT_PORT=1883
   apache:

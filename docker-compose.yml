@@ -10,6 +10,7 @@ services:
         - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
         - "LOG_LOCATION=${LOG_LOCATION}"
         - "PHP_VERSION=${PHP_VERSION}"
+        - "EMONCMS_DIR=${EMONCMS_DIR}"
     volumes:
       - www:${WEB_DIR}
       - phpfina:${PHPFINA_DIR}
