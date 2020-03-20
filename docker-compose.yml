@@ -29,6 +29,7 @@ services:
       - "MQTT_ENABLED=${MQTT_ENABLED}"
       - "MQTT_HOST=${MQTT_HOST}"
       - "MQTT_USER=${MQTT_USER}"
+      - "MQTT_PORT=${MQTT_PORT}"
       - "MQTT_PASSWORD=${MQTT_PASSWORD}"
       - "MQTT_BASETOPIC=${MQTT_BASETOPIC}"
       - "PHPFINA_DIR=${PHPFINA_DIR}"
@@ -74,12 +75,17 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:1.6
-
+    environment:
+      - "MQTT_HOST=${MQTT_HOST}"
+      - "MQTT_USER=${MQTT_USER}"
+      - "MQTT_PORT=${MQTT_PORT}"
+      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
+      
   emoncms_mqtt:
     build: './emoncms_mqtt/'
     depends_on: ["php"]
     command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
-  
+
   emoncms_feedwriter:
     build: './emoncms_feedwriter'
     depends_on: ["php"]
