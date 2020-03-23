@@ -16,6 +16,7 @@ services:
       - phpfina:${PHPFINA_DIR}
       - phptimeseries:${PHPTIMESERIES_DIR}
       - emoncms-log:${LOG_LOCATION}
+      - emoncms-dir:${EMONCMS_DIR}
       - var-lock:/var/lock
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
@@ -50,9 +51,9 @@ services:
 
   apache:
     build: ./apache
-    depends_on: ["php", "db"]
+    depends_on: ["php", "db", "redis"]
     volumes: ["www:${WEB_DIR}"]
-    ports: ["${WEB_PORT}:88"]
+    ports: ["${WEB_PORT}:80"]
 
   db:
     image: mariadb:latest
@@ -83,17 +84,17 @@ services:
       - "MQTT_PASSWORD=${MQTT_PASSWORD}"
       
   emoncms_mqtt:
-    build: './emoncms_mqtt/'
+    build: ./emoncms_mqtt/
     depends_on: ["php"]
     command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
 
   emoncms_feedwriter:
-    build: './emoncms_feedwriter'
+    build: ./emoncms_feedwriter
     depends_on: ["php"]
     command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
 
   emoncms_service-runner:
-    build: './emoncms_service-runner'
+    build: ./emoncms_service-runner
     depends_on: ["redis","php"]
     volumes: ["www:${WEB_DIR}"]
     command: sh -c "sleep 5; python ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"
@@ -104,6 +105,24 @@ services:
       - "REDIS_PREFIX=${REDIS_PREFIX}"
     #restart: unless-stopped
 
+  emonhub:
+    build: ./emonhub
+    depends_on: ["mqtt"]
+    volumes: 
+      - www:${WEB_DIR}
+      - emoncms-dir:${EMONCMS_DIR}
+    command: ["tail", "-f", "/dev/null"]
+    # command: ["/opt/emonhub/emonhub.py", "--config-file=/etc/emonhub/emonhub.conf", "--logfile=/var/log/emonhub/emonhub.log"]
+
+    environment:
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
+      - "EMONCMS_DIR=${EMONCMS_DIR}"
+      - "EMONHUB_DIR=${EMONHUB_DIR}"
+    #restart: unless-stopped
+
 volumes:
   db:
   www:
@@ -111,4 +130,5 @@ volumes:
   phpfina:
   phptimeseries:
   emoncms-log:
+  emoncms-dir:
   var-lock:
