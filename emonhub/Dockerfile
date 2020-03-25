@@ -2,7 +2,7 @@ FROM python:3.8-slim
 RUN apt-get update && apt-get install --no-install-recommends -y git-core python-serial python-configobj python-requests gcc
 RUN git clone https://github.com/openenergymonitor/emonhub.git ${EMONHUB_DIR}
 RUN git clone https://github.com/emoncms/config.git ${EMONCMS_WEB_DIR}/Modules/config
-RUN pip install paho-mqtt rpi.gpio
+# RUN pip install paho-mqtt rpi.gpio
 COPY ./connected.py /connected.py
 # RUN ${EMONHUB_DIR}/install.sh
 

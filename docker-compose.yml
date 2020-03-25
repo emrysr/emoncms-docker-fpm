@@ -57,7 +57,9 @@ services:
 
   db:
     # image: mariadb:latest
-    image: emrysr/rpi-mysql
+    # image:  webhippie/mariadb
+    image:  tobi312/rpi-mysql
+    # image: emrysr/rpi-mysql
     volumes: ["db:${MYSQL_DATA_DIR}"]
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
@@ -65,8 +67,10 @@ services:
       - "MYSQL_DATABASE=${MYSQL_DATABASE}"
       - "MYSQL_USER=${MYSQL_USER}"
       - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}"
       - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
-
+      #   - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    # command: ["tail","-f","/dev/null"]
   redis:
     image: redis:5
     volumes: ["redis:${REDIS_DATA_DIR}"]
@@ -112,8 +116,8 @@ services:
     volumes: 
       - www:${WEB_DIR}
       - emoncms-dir:${EMONCMS_DIR}
-    # command: ["tail", "-f", "/dev/null"]
-    command: ["python", "/connected.py"]
+    command: ["tail", "-f", "/dev/null"]
+    # command: ["python", "/connected.py"]
     # command: ["/opt/emonhub/emonhub.py", "--config-file=/etc/emonhub/emonhub.conf", "--logfile=/var/log/emonhub/emonhub.log"]
     privileged: true
     environment:
