@@ -59,7 +59,7 @@ services:
     build:
         context: ./mysql
         args:
-          - "EMONCMS_DB_IMAGE=${EMONCMS_DB_IMAGE}"
+          - "MYSQL_DOCKER_IMAGE=${MYSQL_DOCKER_IMAGE}"
     volumes: ["db:${MYSQL_DATA_DIR}"]
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
