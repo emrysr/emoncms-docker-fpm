@@ -4,7 +4,6 @@ RUN git clone https://github.com/openenergymonitor/emonhub.git ${EMONHUB_DIR}
 RUN git clone https://github.com/emoncms/config.git ${EMONCMS_WEB_DIR}/Modules/config
 RUN pip install paho-mqtt rpi.gpio
 COPY ./connected.py /connected.py
-RUN python /connected.py
 # RUN ${EMONHUB_DIR}/install.sh
 
 # RUN ${EMONHUB_DIR}//emonhub.py --config-file=/etc/emonhub/emonhub.conf --logfile=/var/log/emonhub/emonhub.log

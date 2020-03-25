@@ -111,7 +111,8 @@ services:
     volumes: 
       - www:${WEB_DIR}
       - emoncms-dir:${EMONCMS_DIR}
-    command: ["tail", "-f", "/dev/null"]
+    # command: ["tail", "-f", "/dev/null"]
+    command: ["python", "/connected.py"]
     # command: ["/opt/emonhub/emonhub.py", "--config-file=/etc/emonhub/emonhub.conf", "--logfile=/var/log/emonhub/emonhub.log"]
     privileged: true
     environment:
