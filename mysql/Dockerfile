@@ -1,7 +1,5 @@
 ## non arm32 bit
-FROM mariadb:latest
-## raspberry pi
-# FROM yobasystems/alpine-mariadb
-# FROM tobi312/rpi-mysql
+ARG MYSQL_DOCKER_IMAGE
+FROM ${MYSQL_DOCKER_IMAGE}
 # comment out "..only listening the localhost.."
-RUN if [ -f "$FILE" ]; then sed -i "s/^bind-address/#bind-address/g" /etc/mysql/mariadb.conf.d/50+
+RUN if [ -f /etc/mysql/mariadb.conf.d/50-server.cnf ]; then sed -i "s/^bind-address/#bind-address/g" /etc/mysql/mariadb.conf.d/50-server.cnf; fi
