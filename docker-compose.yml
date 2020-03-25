@@ -113,7 +113,7 @@ services:
       - emoncms-dir:${EMONCMS_DIR}
     command: ["tail", "-f", "/dev/null"]
     # command: ["/opt/emonhub/emonhub.py", "--config-file=/etc/emonhub/emonhub.conf", "--logfile=/var/log/emonhub/emonhub.log"]
-
+    privileged: true
     environment:
       - "REDIS_ENABLED=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
@@ -121,7 +121,10 @@ services:
       - "REDIS_PREFIX=${REDIS_PREFIX}"
       - "EMONCMS_DIR=${EMONCMS_DIR}"
       - "EMONHUB_DIR=${EMONHUB_DIR}"
-    #restart: unless-stopped
+      - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+    devices:
+        - "/dev/gpiomem:/dev/gpiomem"
+      
 
 volumes:
   db:
