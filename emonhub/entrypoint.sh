@@ -21,7 +21,6 @@ then
     # send signal to host
     echo "reboot" > /shutdown_signal
 else
-    #python ${EMONHUB_DIR}/src/emonhub.py
+    python2 ${EMONHUB_DIR}/src/emonhub.py
 fi
 
-tail -f /dev/null
