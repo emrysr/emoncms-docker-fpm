@@ -1,5 +1,8 @@
 # install docker on a raspberry pi
-tested on rpi3b+
+tested on rpi3b+ on ethernet
+
+will run all the required emoncms components within docker containers
+host system reboots trigged by ~/.host-shutdown-interface.sh
 
 from your laptop:
 --------------
@@ -9,23 +12,16 @@ once completed (7mins for me), remove and re-insert sd card
 put empty file onto /boot partition named `ssh` to enable headless remote access
 unmount the sd card (eject/sefely remove) and put it into the raspberry pi
 turn on the raspberry pi
-get the new ip 
+get the new ip - try the fing app or the nmap command (eg. `nmap -sP 192.168.1.0/24`) to see list of devices
 login via ssh `$ ssh pi@192.168.1.[0-254]` into a terminal window
 
 from the pi
 -------------
-curl -sSL https://get.docker.com | sh
-sudo usermod -aG docker pi
-echo 'arm_64bit=1' | sudo tee -a /boot/config.txt
-yes | sudo RPI_REBOOT=1 rpi-update
+all the commands have been put into a bash script:
+$ ./install.sh 
 
-[login again via ssh]
+shutdown controller
+------------
+to enable docker container to reboot host, create volume on container that maps to the file /var/run/shutdown_signal. if the contents of this file is changed to "reboot" then the command `sudo shutdown -r now` is triggerd
+@requires inotify-tools
 
-
-from the pi
--------------
-sudo apt-get update && sudo apt-get install -y libffi-dev libssl-dev python3 python3-pip git-core
-sudo pip3 install docker-compose
-git clone https://github.com/emrysr/emoncms-docker-fpm.git && cd emoncms-docker-fpm
-git checkout -b stage1-5-emonhub && git pull origin stage1-5-emonhub
-docker-compose up

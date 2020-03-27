@@ -117,23 +117,22 @@ services:
     restart: always
 
   emonhub:
+    command: ["tail", "-f", "/dev/null"]
     build:
       context: ./emonhub
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
         - "EMONCMS_DIR=${EMONCMS_DIR}"
         - "EMONHUB_DIR=${EMONHUB_DIR}"
-        - "REBOOT_TOGGLE=/reboot-requested"
+        - "REBOOT_HOST_TOGGLE=/reboot_request"
     depends_on: ["mqtt"]
     privileged: true
-    pid: "host"
    # restart: always
     volumes:
       - "www:${WEB_DIR}"
       - "emoncms-dir:${EMONCMS_DIR}"
       - "/boot:/boot"
-      - "/run/dbus:/run/dbus"
-      - "/run/systemd:/run/systemd"
+      - "./shutdown_signal:/shutdown_signal"
     environment:
       - "REDIS_ENABLED2=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
@@ -142,7 +141,7 @@ services:
       - "EMONCMS_DIR=${EMONCMS_DIR}"
       - "EMONHUB_DIR=${EMONHUB_DIR}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-      - "REBOOT_TOGGLE=/reboot-requested"
+      - "REBOOT_HOST_TOGGLE=/reboot_request"
     devices:
       - "/dev/gpiomem:/dev/gpiomem"
 
