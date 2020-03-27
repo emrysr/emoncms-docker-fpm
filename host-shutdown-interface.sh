@@ -17,5 +17,8 @@ while inotifywait -e close_write $file; do
   elif [ "$signal" == "reboot" ]; then
     sudo echo "reboot done" > file
     sudo shutdown -r now
+  elif [ "$signal" == "restart-emonhub" ]; then
+    sudo echo "restarted emonhub" > file
+    docker-compose restart emonhub
   fi
 done

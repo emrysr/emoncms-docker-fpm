@@ -11,13 +11,18 @@ services:
         - "LOG_LOCATION=${LOG_LOCATION}"
         - "PHP_VERSION=${PHP_VERSION}"
         - "EMONCMS_DIR=${EMONCMS_DIR}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_LOG=${EMONHUB_LOG}"
     volumes:
-      - www:${WEB_DIR}
-      - phpfina:${PHPFINA_DIR}
-      - phptimeseries:${PHPTIMESERIES_DIR}
-      - emoncms-log:${LOG_LOCATION}
-      - emoncms-dir:${EMONCMS_DIR}
-      - var-lock:/var/lock
+      - "www:${WEB_DIR}"
+      - "phpfina:${PHPFINA_DIR}"
+      - "phptimeseries:${PHPTIMESERIES_DIR}"
+      - "emoncms-log:${LOG_LOCATION}"
+      - "emoncms-dir:${EMONCMS_DIR}"
+      - "emonhub-dir:${EMONHUB_DIR}"
+      - "var-lock:/var/lock"
+      - "emonhub-log:${EMONHUB_LOG}"
+      - "./shutdown_signal:/shutdown_signal"
     environment:
       - "MYSQL_HOST=${MYSQL_HOST}"
       - "MYSQL_PORT=${MYSQL_PORT}"
@@ -46,6 +51,8 @@ services:
       - "APPNAME=${APPNAME}"
       - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+      - "EMONHUB_DIR=${EMONHUB_DIR}"
+      - "EMONHUB_LOG=${EMONHUB_LOG}"
     working_dir: ${WEB_DIR}/${APPNAME}
     restart: always
 
@@ -117,20 +124,22 @@ services:
     restart: always
 
   emonhub:
-    command: ["tail", "-f", "/dev/null"]
     build:
       context: ./emonhub
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
         - "EMONCMS_DIR=${EMONCMS_DIR}"
         - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_LOG=${EMONHUB_LOG}"
         - "REBOOT_HOST_TOGGLE=/reboot_request"
     depends_on: ["mqtt"]
     privileged: true
-   # restart: always
+    restart: always
     volumes:
       - "www:${WEB_DIR}"
       - "emoncms-dir:${EMONCMS_DIR}"
+      - "emonhub-dir:${EMONHUB_DIR}"
+      - "emonhub-log:${EMONHUB_LOG}"
       - "/boot:/boot"
       - "./shutdown_signal:/shutdown_signal"
     environment:
@@ -140,6 +149,7 @@ services:
       - "REDIS_PREFIX=${REDIS_PREFIX}"
       - "EMONCMS_DIR=${EMONCMS_DIR}"
       - "EMONHUB_DIR=${EMONHUB_DIR}"
+      - "EMONHUB_LOG=${EMONHUB_LOG}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
       - "REBOOT_HOST_TOGGLE=/reboot_request"
     devices:
@@ -154,5 +164,8 @@ volumes:
   phptimeseries:
   emoncms-log:
   emoncms-dir:
+  emonhub-dir:
+  emonhub-log:
   var-lock:
+ 
 

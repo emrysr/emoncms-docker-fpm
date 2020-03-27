@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y git python-serial python-configobj pyth
 
 #RUN git clone https://github.com/openenergymonitor/emonhub.git ${EMONHUB_DIR} 
 RUN git clone https://github.com/emrysr/emonhub.git ${EMONHUB_DIR} 
-RUN git clone https://github.com/emoncms/config.git ${EMONCMS_WEB_DIR}/Modules/config
-RUN pip install paho-mqtt rpi.gpio configobj pyserial
+#RUN git clone https://github.com/emoncms/config.git ${EMONCMS_WEB_DIR}/Modules/config
+RUN git clone https://github.com/emrysr/config.git ${EMONCMS_WEB_DIR}/Modules/config
+RUN pip install rpi.gpio configobj pyserial
+RUN pip2 install paho-mqtt
 RUN echo "reboot" > /shutdown_request
 ENTRYPOINT ["/entrypoint.sh"]

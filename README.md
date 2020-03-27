@@ -4,6 +4,7 @@ tested on rpi3b+ on ethernet
 will run all the required emoncms components within docker containers
 host system reboots trigged by ~/.host-shutdown-interface.sh
 
+## install instructions
 from your laptop:
 --------------
 download the official raspibian buster lite [I'm using 2020-02-13-raspbian-buster-lite.zip](magnet:?xt=urn:btih:2213f24bca4031663b3dfa99fb554dce8cfcb5da&dn=2020-02-13-raspbian-buster-lite.zip&tr=http%3A%2F%2Ftracker.raspberrypi.org%3A6969%2Fannounce)
