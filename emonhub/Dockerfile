@@ -11,5 +11,5 @@ RUN apt-get update && apt-get install -y git python-serial python-configobj pyth
 RUN git clone https://github.com/openenergymonitor/emonhub.git ${EMONHUB_DIR} 
 RUN git clone https://github.com/emoncms/config.git ${EMONCMS_WEB_DIR}/Modules/config
 RUN pip install paho-mqtt rpi.gpio 
-#RUN touch "${REBOOT_TOGGLE}"
+RUN touch "${REBOOT_TOGGLE}"
 ENTRYPOINT ["/entrypoint.sh"]

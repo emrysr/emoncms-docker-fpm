@@ -20,6 +20,7 @@ RUN pecl install Mosquitto-beta \
 RUN git clone https://github.com/emrysr/emoncms.git ${EMONCMS_WEB_DIR} \
     && git clone https://github.com/emoncms/dashboard.git ${EMONCMS_WEB_DIR}/Modules/dashboard \
     && git clone https://github.com/emoncms/graph.git ${EMONCMS_WEB_DIR}/Modules/graph \
+    && git clone https://github.com/emoncms/device.git ${EMONCMS_WEB_DIR}/Modules/device \
     && git clone https://github.com/emoncms/app.git ${EMONCMS_WEB_DIR}/Modules/app
 
 COPY ./docker.settings.ini ${EMONCMS_WEB_DIR}/settings.ini

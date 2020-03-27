@@ -117,7 +117,13 @@ services:
     restart: always
 
   emonhub:
-    build: ./emonhub
+    build:
+      context: ./emonhub
+      args:
+        - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "EMONCMS_DIR=${EMONCMS_DIR}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "REBOOT_TOGGLE=/reboot-requested"
     depends_on: ["mqtt"]
     privileged: true
     pid: "host"
@@ -129,14 +135,14 @@ services:
       - "/run/dbus:/run/dbus"
       - "/run/systemd:/run/systemd"
     environment:
-      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_ENABLED2=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
       - "REDIS_PORT=${REDIS_PORT}"
       - "REDIS_PREFIX=${REDIS_PREFIX}"
       - "EMONCMS_DIR=${EMONCMS_DIR}"
       - "EMONHUB_DIR=${EMONHUB_DIR}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-      - "REBOOT_TOGGLE=/reboot-required"
+      - "REBOOT_TOGGLE=/reboot-requested"
     devices:
       - "/dev/gpiomem:/dev/gpiomem"
 
