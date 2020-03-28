@@ -7,11 +7,7 @@ ARG EMONHUB_LOG
 
 COPY connected.py /
 COPY entrypoint.sh /
-RUN if [ ! -z "$EMONHUB_LOG" ] && [ ! -a $EMONHUB_LOG ]; then
-    LOG_DIR=`dirname $EMONHUB_LOG`
-    mkidr $LOG_DIR -p
-    touch $EMONHUB_LOG
-fi 
+RUN if [ ! -z "$EMONHUB_LOG" ] && [ ! -a $EMONHUB_LOG ]; then; LOG_DIR=`dirname $EMONHUB_LOG`; mkidr $LOG_DIR -p;   touch $EMONHUB_LOG; fi 
 RUN apt-get update && apt-get install -y git python-serial python-configobj python-requests build-essential python3-rpi.gpio python-pip
 
 #RUN git clone https://github.com/openenergymonitor/emonhub.git ${EMONHUB_DIR} 
