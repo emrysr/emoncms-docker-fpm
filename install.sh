@@ -2,14 +2,14 @@
 # intended to be ran on a raspberry pi
 
 # ADD SIGNAL FILE & inotify PACKAGE
----------------
+# ---------------
 sudo apt-get update && sudo apt-get install -y inotify-tools
 FILE=./shutdown_signal
 sudo touch $FILE
 sudo chmod 777 $FILE
 
 # EDIT rc.local
---------------
+# --------------
 # run watcher script on boot...
 #   looks for blank line before "exit 0" and adds host-shutdown-interface.sh before it 
 #   can only be ran once as there will not be a blank line before the "exit 0" line

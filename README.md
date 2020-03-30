@@ -26,6 +26,7 @@ sudo apt-get update && sudo apt-get install -y git-core
 # copy files from github
 git clone https://github.com/emrysr/emoncms-docker-fpm.git && cd emoncms-docker-fpm
 git checkout -b stage1-5-emonhub && git pull origin stage1-5-emonhub
+git pull origin stage1-5-emonhub
 
 # run install
 $ ./install.sh 
