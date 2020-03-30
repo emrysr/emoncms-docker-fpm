@@ -136,14 +136,14 @@ services:
     privileged: true
     restart: always
     volumes:
-      - "www:${WEB_DIR}"
-      - "emoncms-dir:${EMONCMS_DIR}"
-      - "emonhub-dir:${EMONHUB_DIR}"
-      - "emonhub-log:${EMONHUB_LOG}"
-      - "/boot:/boot"
-      - "./shutdown_signal:/shutdown_signal"
+       - "www:${WEB_DIR}"
+       - "emoncms-dir:${EMONCMS_DIR}"
+       - "emonhub-dir:${EMONHUB_DIR}"
+       - "emoncms-log:${LOG_LOCATION}"
+       - "/boot:/boot"
+       - "./shutdown_signal:/shutdown_signal"
     environment:
-      - "REDIS_ENABLED2=${REDIS_ENABLED}"
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
       - "REDIS_HOST=${REDIS_HOST}"
       - "REDIS_PORT=${REDIS_PORT}"
       - "REDIS_PREFIX=${REDIS_PREFIX}"
