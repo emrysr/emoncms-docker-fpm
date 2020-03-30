@@ -12,10 +12,6 @@ EOF
   exit 1
 fi
 
-echo "--------------------------"
-echo $REBOOT_HOST_TOGGLE
-echo "--------------------------"
-
 # check for reboot request status, reboot if required
 if [ -e $REBOOT_HOST_TOGGLE ]
 then
