@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+testing gpio capabilities of docker container
+will output "connected" when button pin is pulled high
+see https://pinout.xyz for suitable pins
+"""
 import time
 import subprocess
 import RPi.GPIO as GPIO
@@ -13,7 +19,7 @@ while True:
     button_state = GPIO.input(button)
     if button_state == GPIO.HIGH:
       print ("connected")
-    time.sleep(0.5)
+    time.sleep(0.1)
 
 
 GPIO.cleanup()
