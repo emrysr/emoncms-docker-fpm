@@ -20,5 +20,5 @@ RUN git clone https://github.com/emrysr/emonhub.git ${EMONHUB_DIR}
 RUN git clone https://github.com/emrysr/config.git ${EMONCMS_WEB_DIR}/Modules/config
 RUN pip install rpi.gpio configobj pyserial
 RUN pip2 install paho-mqtt
-RUN echo "reboot" > /shutdown_request
+RUN echo "reboot" > $REBOOT_HOST_TOGGLE
 ENTRYPOINT ["/entrypoint.sh"]
