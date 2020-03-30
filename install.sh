@@ -38,7 +38,7 @@ read -n 1 -s -r -p "Press any key to reboot"
 --------------
 # run the host-shutdown-interface.sh before running the docker containers
 # (/etc/rc.local will restart it on next boot)
-./host-shutdown-interface.sh && 
+./host-shutdown-interface.sh &
 
 # DOCKER COMPOSE
 --------------
