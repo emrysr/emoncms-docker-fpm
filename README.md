@@ -22,9 +22,9 @@ from your laptop:
 once logged in remotly...
 -------------
 
-# install git
-sudo apt-get update && sudo apt-get install -y git-core
+# get the files on the device
 
+sudo apt-get update && sudo apt-get install -y git-core
 
 all the commands have been put into a bash script. clone the git repo and run the install script...
 ## copy files from github
