@@ -2,17 +2,22 @@
 # Disable bluetooth device and restores UART0/ttyAMA0
 # once the device tree overlay setting is added to the /boot/config.txt the host must reboot
 
+set -e
+
+# test for env var 
 if [ -z "$REBOOT_HOST_TOGGLE" ]; then
   cat >&2 <<EOF
 A REBOOT_HOST_TOGGLE is required to run this container.
 EOF
   exit 1
 fi
-exec "$@"
 
-set -e
+echo "--------------------------"
+echo $REBOOT_HOST_TOGGLE
+echo "--------------------------"
 
-if [ -e ${REBOOT_HOST_TOGGLE} ]
+# check for reboot request status, reboot if required
+if [ -e $REBOOT_HOST_TOGGLE ]
 then
     # remove reboot toggle to prevent reboot on next boot
     rm ${REBOOT_HOST_TOGGLE}
@@ -24,3 +29,4 @@ else
     python2 ${EMONHUB_DIR}/src/emonhub.py
 fi
 
+exec "$@"
