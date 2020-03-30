@@ -4,7 +4,7 @@
 # ADD SIGNAL FILE & inotify PACKAGE
 ---------------
 sudo apt-get update && sudo apt-get install -y inotify-tools
-FILE=/var/run/shutdown
+FILE=./shutdown_signal
 sudo touch $FILE
 sudo chmod 777 $FILE
 
