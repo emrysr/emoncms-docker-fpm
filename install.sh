@@ -26,6 +26,14 @@ sudo usermod -aG docker pi
 sudo apt-get update && sudo apt-get install -y libffi-dev libssl-dev python3 python3-pip
 sudo pip3 install docker-compose
 
+echo "--------------------------"
+echo "DONE"
+echo "--------------------------"
+echo "once rebooted the emonhub will be available at:"
+ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'|tail -n1
+echo "--------------------------"
+read -n 1 -s -r -p "Press any key to reboot"
+
 # HOST SHUTDOWN
 --------------
 # run the host-shutdown-interface.sh before running the docker containers
