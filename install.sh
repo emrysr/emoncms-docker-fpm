@@ -1,5 +1,5 @@
 #!/bin/bash
-# intended to be ran on docker host
+# intended to be ran on a raspberry pi
 
 # ADD SIGNAL FILE & inotify PACKAGE
 ---------------
@@ -33,7 +33,7 @@ git checkout -b stage1-5-emonhub && git pull origin stage1-5-emonhub
 --------------
 # run the host-shutdown-interface.sh before running the docker containers
 # (/etc/rc.local will restart it on next boot)
-./host-shutdown-interface.sh
+./host-shutdown-interface.sh && 
 
 # DOCKER COMPOSE
 --------------
