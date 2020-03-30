@@ -42,6 +42,11 @@ $ ./install.sh
 to enable docker container to reboot host, create volume on container that maps to the file /var/run/shutdown_signal. if the contents of this file is changed to "reboot" then the command `sudo shutdown -r now` is triggerd
 @requires inotify-tools
 
-TODO:
-install instructions on laptop
- - just git clone the repo and run docker-compose up in the new directory
+TODO: test and finish this
+## install instructions on laptop
+ - just git clone the repo
+ - edit .env and correct WEB_PORT to an acceptable number
+ - edit .env to MYSQL_DOCKER_IMAGE to mariadb:latest (not supported by arm v7)
+ - run docker-compse up in the emoncms-docker directory
+
+

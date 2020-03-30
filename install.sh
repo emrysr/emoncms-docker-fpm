@@ -42,5 +42,6 @@ read -n 1 -s -r -p "Press any key to reboot"
 
 # DOCKER COMPOSE
 # --------------
-# run all containers (will restart on reboot)
-docker-compose up
+# run all containers in detached mode (will restart on reboot)
+docker-compose up -d
+
