@@ -41,6 +41,6 @@ read -n 1 -s -r -p "Press any key to reboot"
 ./host-shutdown-interface.sh &
 
 # DOCKER COMPOSE
---------------
+# --------------
 # run all containers (will restart on reboot)
 docker-compose up
